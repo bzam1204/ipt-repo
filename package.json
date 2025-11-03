@@ -1,0 +1,21 @@
+{
+  "name": "ipt-repo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "debug": "turbo debug",
+    "test": "turbo test",
+    "start": "turbo start",
+    "test:e2e": "turbo test:e2e"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.11.1",
+  "devDependencies": {
+    "turbo": "^2.5.8"
+  }
+}
