@@ -6,13 +6,13 @@ describe('Login', () => {
 
 	beforeEach(async () => {
 		const response = await axios.post('account/create', input);
-		expect(response.status).toBe(201);
+		expect(response.status).toBe(204);
 	});
 
-	//todo: analyse the application defaults and standards and make that test pass
-	it('should login', async () => {
+	const loginEndpoint = 'account/login';
+	it('should authenticate with valid credentials', async () => {
 		const payload = {email: input.email, password: input.password};
-		const response = await axios.post('login', input);
+		const response = await axios.post(loginEndpoint, payload);
 		expect(response.status).toBe(200);
 		expect(response.data.accessToken).toBeDefined();
 		expect(response.data.refreshToken).toBeDefined();

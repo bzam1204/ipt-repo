@@ -8,8 +8,8 @@ export class UUID {
 		if (!this.isValidUUID(_value)) throw new DomainException('Invalid UUID');
 	};
 
-	static create(value?: string): UUID {
-		const uuid = value ?? crypto.randomUUID();
+	static create(): UUID {
+		const uuid = crypto.randomUUID();
 		const output = new UUID(uuid);
 		return output;
 	};

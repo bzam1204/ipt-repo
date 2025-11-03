@@ -11,12 +11,12 @@ describe('UUID', () => {
 
 	it('should generate a UUID from a given value', () => {
 		const value = crypto.randomUUID();
-		const uuid = UUID.create(value);
+		const uuid = new UUID(value);
 		expect(uuid).toBeDefined();
 	});
 
 	it.each(invalidUUIDs)('should not generate a UUID with invalid given uuid %s', (value) => {
-		expect(() => UUID.create(value)).toThrow('Invalid UUID');
+		expect(() => new UUID(value)).toThrow('Invalid UUID');
 	});
 
 });

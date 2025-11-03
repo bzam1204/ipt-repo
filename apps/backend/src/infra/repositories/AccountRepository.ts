@@ -1,4 +1,4 @@
-import {Account, AccountBuilder} from "@/domain/entities/Account/Account";
+import {Account} from "@/domain/entities/Account/Account";
 
 import {AccountModel} from "@/infra/database/models/account.model";
 import {DatabaseConnectionAdapter} from "@/infra/database/DatabaseConnectionPostgres";
@@ -8,24 +8,22 @@ export class AccountRepository {
 	constructor(private readonly db: DatabaseConnectionAdapter) { }
 
 	async getByEmail(email: string): Promise<Account | null> {
-		const query = "SELECT FROM ipt.ipt.accounts WHERE Email = $1"
+		const query = "SELECT account_id, cpf, email, password, last_name, first_name FROM ipt.accounts WHERE email = $1";
 		const params = [email];
 		const result = await this.db.query<DatabaseQueryResult<AccountModel>>(query, params);
 		if (result.length === 0) return null;
 		const [model] = result;
-		const builder: AccountBuilder = {email: model.email, password: model.password, cpf: model.cpf, lastName: model.last_name, firstName: model.first_name};
-		const output = Account.build(builder);
+		const output = new Account(model.account_id, model.email, model.password, model.cpf, model.last_name, model.first_name);
 		return output;
 	};
 
 	async getByCpf(cpf: string): Promise<Account | null> {
-		const query = "SELECT cpf, email,password, last_name, first_name  FROM ipt.ipt.accounts WHERE cpf = $1"
+		const query = "SELECT account_id, cpf, email, password, last_name, first_name FROM ipt.accounts WHERE cpf = $1";
 		const params = [cpf];
 		const result = await this.db.query<DatabaseQueryResult<AccountModel>>(query, params);
 		if (result.length === 0) return null;
 		const [model] = result;
-		const builder: AccountBuilder = {email: model.email, password: model.password, cpf: model.cpf, lastName: model.last_name, firstName: model.first_name};
-		const output = Account.build(builder);
+		const output = new Account(model.account_id, model.email, model.password, model.cpf, model.last_name, model.first_name);
 		return output;
 	};
 

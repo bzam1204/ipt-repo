@@ -4,24 +4,22 @@ import DomainException from "@/domain/exceptions/DomainException";
 import {PasswordErrorCodes} from "@/domain/exceptions/PasswordErrorCodes";
 
 export class Password {
-
 	private static readonly saltRounds = 10;
 
-	private constructor(private readonly _value: string) {
-		if (!_value) throw new DomainException(PasswordErrorCodes.message);
-		if (!Password.hasNumber(_value)) throw new DomainException(...PasswordErrorCodes.getValues('number'));
-		if (!Password.hasMinLength(_value)) throw new DomainException(...PasswordErrorCodes.getValues('tooShort'));
-		if (!Password.hasUpperCase(_value)) throw new DomainException(...PasswordErrorCodes.getValues('uppercase'));
-		if (!Password.hasLowerCase(_value)) throw new DomainException(...PasswordErrorCodes.getValues('lowercase'));
-		this._value = this.hash(_value);
-	}
+	constructor(private readonly _value: string) { };
 
 	static create(value: string): Password {
-		const output = new Password(value);
+		if (!value) throw new DomainException(PasswordErrorCodes.message);
+		if (!this.hasNumber(value)) throw new DomainException(...PasswordErrorCodes.getValues('number'));
+		if (!this.hasMinLength(value)) throw new DomainException(...PasswordErrorCodes.getValues('tooShort'));
+		if (!this.hasUpperCase(value)) throw new DomainException(...PasswordErrorCodes.getValues('uppercase'));
+		if (!this.hasLowerCase(value)) throw new DomainException(...PasswordErrorCodes.getValues('lowercase'));
+		const hashedValue = this.hash(value);
+		const output = new Password(hashedValue);
 		return output;
 	};
 
-	private hash(value: string): string {
+	private static hash(value: string): string {
 		const salt = bcrypt.genSaltSync(Password.saltRounds);
 		const output = bcrypt.hashSync(value, salt);
 		return output;

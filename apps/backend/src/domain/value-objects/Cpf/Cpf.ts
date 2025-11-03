@@ -10,13 +10,7 @@ export class Cpf {
 		this._value = value.replace(/\D/g, '');
 	};
 
-	static create(value: string): Cpf {
-		return new Cpf(value);
-	};
-
-	get value(): string {
-		return this._value;
-	};
+	get value(): string { return this._value; };
 
 	private validateCpf(cpf: string): boolean {
 		cpf = this.removeNonDigits(cpf);

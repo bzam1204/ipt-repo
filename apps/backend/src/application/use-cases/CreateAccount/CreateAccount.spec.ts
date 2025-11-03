@@ -17,9 +17,8 @@ describe('Create Account', () => {
 
 	it('should be able to create a new account', async () => {
 		const input = {email: "johndoe@gmail.com", password: "P@ssw0rd", lastName: 'Doe', cpf: cpfGenerator(), firstName: 'John'};
-		const account = await createAccount.execute(input);
-		expect(account.accountId).toBeDefined();
-		expect(account.email).toBe(input.email);
+		const output = await createAccount.execute(input);
+		expect(output).toBe(void 0);
 	});
 
 	it('should not create an account if the given Email already exists', async () => {

@@ -4,17 +4,26 @@ import {Email} from "@/domain/value-objects/Email/Email";
 import {Password} from "@/domain/value-objects/Password/Password";
 
 export class Account {
-	constructor(
-		private readonly _accountId: UUID,
-		private readonly _cpf: Cpf,
-		private readonly _email: Email,
-		private readonly _password: Password,
-		private readonly _lastName: string,
-		private readonly _firstName: string,
-	) {};
+	private readonly _accountId: UUID;
+	private readonly _cpf: Cpf;
+	private readonly _email: Email;
+	private readonly _password: Password;
+	private readonly _lastName: string;
+	private readonly _firstName: string;
+
+	constructor(accountId: string, email: string, password: string, cpf: string, lastName: string, firstName: string) {
+		this._accountId = new UUID(accountId);
+		this._cpf = new Cpf(cpf);
+		this._email = new Email(email);
+		this._password = new Password(password);
+		this._lastName = lastName;
+		this._firstName = firstName;
+	};
 
 	static create(email: string, password: string, cpf: string, lastName: string, firstName: string): Account {
-		const output = new Account(UUID.create(), Cpf.create(cpf), Email.create(email), Password.create(password), lastName, firstName);
+		const accountId = UUID.create().value;
+		const hashedPassword = Password.create(password).value;
+		const output = new Account(accountId, email, hashedPassword, cpf, lastName, firstName);
 		return output;
 	};
 
@@ -46,5 +55,6 @@ export interface AccountBuilder {
 	email: string,
 	password: string,
 	lastName: string,
-	firstName: string
+	firstName: string,
+	accountId?: string,
 }
