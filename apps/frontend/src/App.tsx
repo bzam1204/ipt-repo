@@ -1,21 +1,19 @@
-import { useState, useEffect } from 'react';
+import HomePage from '@/pages/home';
+import LoginPage from '@/pages/login';
+import RegisterPage from '@/pages/register';
+import DashboardPage from '@/pages/dashboard';
+import { Routes, Route } from 'react-router-dom';
+import { ProtectedRoute } from '@/router/protected-route';
 
-function App() {
-  const [message, setMessage] = useState('');
-
-  useEffect(() => {
-    fetch('/api/message')
-      .then((res) => res.json())
-      .then((data) => setMessage(data.message))
-      .catch((err) => console.error('Falha ao buscar dados:', err));
-  }, []);
-
+export default function App() {
   return (
-    <div>
-      <h1>Monorepo com Vite + React + Express</h1>
-      <p>Mensagem do Backend: <strong>{message}</strong></p>
-    </div>
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route element={<ProtectedRoute />}>
+        <Route path="/dashboard" element={<DashboardPage />} />
+      </Route>
+    </Routes>
   );
 }
-
-export default App;
