@@ -10,6 +10,7 @@ describe('Login', () => {
 	});
 
 	const loginEndpoint = 'account/login';
+
 	it('should authenticate with valid credentials', async () => {
 		const payload = {email: input.email, password: input.password};
 		const response = await axios.post(loginEndpoint, payload);

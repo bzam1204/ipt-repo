@@ -9,4 +9,10 @@ describe('Account', () => {
 		expect(response.status).toBe(204);
 	});
 
+	it('should not create a new account with invalid data', async () => {
+		const input = {cpf: 'invalid', email: 'invalid', password: "P@ssw0rd", lastName: 'Doe', firstName: 'John'};
+		const response = await axios.post('account/create', input);
+		expect(response.status).toBe(422);
+	});
+
 });
