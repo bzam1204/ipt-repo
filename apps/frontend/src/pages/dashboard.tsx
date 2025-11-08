@@ -7,14 +7,13 @@ export default function DashboardPage() {
     <Theme theme="g10">
       <div style={{ display: 'grid', placeItems: 'center', minHeight: '100dvh', padding: '2rem' }}>
         <Tile style={{ width: 640 }}>
-          <h2 style={{ marginBottom: 16 }}>Dashboard</h2>
-          <p>Welcome! The dashboard is coming soon.</p>
+          <h2 style={{ marginBottom: 16 }}>Painel</h2>
+          <p>Bem-vindo! O painel estará disponível em breve.</p>
           <div style={{ marginTop: 16 }}>
-            <Button kind="ghost" onClick={clearSession}>Sign out</Button>
+            <Button kind="ghost" onClick={clearSession}>Sair</Button>
           </div>
         </Tile>
       </div>
     </Theme>
   );
 }
-

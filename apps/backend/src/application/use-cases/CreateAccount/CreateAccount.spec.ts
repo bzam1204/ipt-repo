@@ -25,14 +25,20 @@ describe('Create Account', () => {
 		const repoStub = stub(accountRepositoryStub, 'getByEmail').resolves({} as Account);
 		const input = {email: "johndoe@gmail.com", password: "123", lastName: 'Doe', cpf: '123', firstName: 'John'};
 		const createAccount = new CreateAccount(accountRepositoryStub);
-		await expect(createAccount.execute(input)).rejects.toThrow("Email already exists")
+		await expect(createAccount.execute(input)).rejects.toMatchObject({
+			message: 'Parâmetros inválidos',
+			cause: 'E-mail já cadastrado',
+		});
 		repoStub.restore();
 	});
 
 	it('should not create an account if the given cpf already exists', async () => {
 		const repoStub = stub(accountRepositoryStub, 'getByCpf').resolves({} as Account);
 		const input = {email: "johndoe@gmail.com", password: "123", lastName: 'Doe', cpf: '123', firstName: 'John'};
-		await expect(createAccount.execute(input)).rejects.toThrow("Cpf already exists")
+		await expect(createAccount.execute(input)).rejects.toMatchObject({
+			message: 'Parâmetros inválidos',
+			cause: 'CPF já cadastrado',
+		});
 		repoStub.restore();
 	});
 

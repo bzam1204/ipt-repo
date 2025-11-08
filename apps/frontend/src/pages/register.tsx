@@ -6,10 +6,10 @@ import { useNavigate, Link } from 'react-router-dom';
 export default function RegisterPage() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [cpf, setCpf] = useState('');
-  const [password, setPassword] = useState('');
-  const { mutateAsync, isPending, isError, isSuccess } = useRegisterAccount();
+  const { mutateAsync, isPending, isError, isSuccess, error } = useRegisterAccount();
   const navigate = useNavigate();
 
   async function handleSubmit(e: React.FormEvent) {
@@ -22,12 +22,12 @@ export default function RegisterPage() {
     <Theme theme="g10">
       <div style={{ display: 'grid', placeItems: 'center', minHeight: '100dvh', padding: '2rem' }}>
         <Tile style={{ width: 520 }}>
-          <h2 style={{ marginBottom: 16 }}>Create your account</h2>
+          <h2 style={{ marginBottom: 16 }}>Crie sua conta</h2>
           {isError && (
             <InlineNotification
               kind="error"
-              title="Registration failed"
-              subtitle="Please verify your data and try again."
+              title={error.message}
+              subtitle={error.cause}
               lowContrast
               style={{ marginBottom: 12 }}
             />
@@ -35,25 +35,25 @@ export default function RegisterPage() {
           {isSuccess && (
             <InlineNotification
               kind="success"
-              title="Account created"
-              subtitle="Redirecting you to sign in..."
+              title="Conta criada"
+              subtitle="Redirecionando para a página de login..."
               lowContrast
               style={{ marginBottom: 12 }}
             />
           )}
           <Form onSubmit={handleSubmit}>
-            <FormGroup legendText="Your information">
+            <FormGroup legendText="Suas informações">
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <TextInput
                   id="firstName"
-                  labelText="First name"
+                  labelText="Nome"
                   value={firstName}
                   onChange={(e) => setFirstName(e.currentTarget.value)}
                   required
                 />
                 <TextInput
                   id="lastName"
-                  labelText="Last name"
+                  labelText="Sobrenome"
                   value={lastName}
                   onChange={(e) => setLastName(e.currentTarget.value)}
                   required
@@ -61,7 +61,7 @@ export default function RegisterPage() {
               </div>
               <TextInput
                 id="email"
-                labelText="Email"
+                labelText="E-mail"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.currentTarget.value)}
@@ -76,7 +76,7 @@ export default function RegisterPage() {
               />
               <PasswordInput
                 id="password"
-                labelText="Password"
+                labelText="Senha"
                 value={password}
                 onChange={(e) => setPassword(e.currentTarget.value)}
                 required
@@ -84,9 +84,9 @@ export default function RegisterPage() {
             </FormGroup>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 12 }}>
               <Button kind="primary" type="submit" disabled={isPending}>
-                {isPending ? <InlineLoading description="Creating account..." /> : 'Create account'}
+                {isPending ? <InlineLoading description="Criando conta..." /> : 'Criar conta'}
               </Button>
-              <Link to="/login">Already have an account? Sign in</Link>
+              <Link to="/login">Já tem uma conta? Entre</Link>
             </div>
           </Form>
         </Tile>
@@ -94,4 +94,3 @@ export default function RegisterPage() {
     </Theme>
   );
 }
-

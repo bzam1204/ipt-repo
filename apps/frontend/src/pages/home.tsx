@@ -10,17 +10,17 @@ export default function HomePage() {
         <Layer>
           <div style={{ maxWidth: 720 }}>
             <Heading className="cds--type-expressive-heading-04" style={{ marginBottom: '1rem' }}>
-              Welcome to IPT Platform
+              Bem-vindo à Plataforma IPT
             </Heading>
             <p style={{ marginBottom: '1.5rem', lineHeight: 1.6 }}>
-              Build, learn, and collaborate. Create your account to get started or sign in to continue.
+              Construa, aprenda e colabore. Crie sua conta para começar ou entre para continuar.
             </p>
             <div style={{ display: 'flex', gap: 12 }}>
-              <Button kind="primary" onClick={() => navigate('/register')}>Create account</Button>
-              <Button kind="secondary" onClick={() => navigate('/login')}>Sign in</Button>
+              <Button kind="primary" onClick={() => navigate('/register')}>Criar conta</Button>
+              <Button kind="secondary" onClick={() => navigate('/login')}>Entrar</Button>
             </div>
             <p style={{ marginTop: '1.5rem' }}>
-              Learn more about the app purpose in the documentation. <Link href="#">Read docs</Link>
+              Saiba mais sobre o propósito do aplicativo na documentação. <Link href="#">Ler documentação</Link>
             </p>
           </div>
         </Layer>
@@ -28,4 +28,3 @@ export default function HomePage() {
     </Theme>
   );
 }
-

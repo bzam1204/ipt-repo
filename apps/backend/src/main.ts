@@ -10,19 +10,18 @@ import {JwtAdapter} from "@/infra/JwtAdapter";
 import {AccountRepository} from "@/infra/repositories/AccountRepository";
 import {DatabaseConnectionAdapter} from "@/infra/database/DatabaseConnectionPostgres";
 import DomainException from "@/domain/exceptions/DomainException";
+import {ExpressAdapter} from "@/ExpressAdapter";
 
-const app = express();
-const port = process.env.PORT ?? 3001;
+const app = new ExpressAdapter();
+const port = Number(process.env.PORT) ?? 3001;
 
-app.use(cors());
-app.use(express.json());
 const databaseConnection = new DatabaseConnectionAdapter();
 const accountRepository = new AccountRepository(databaseConnection);
 const tokenProvider = new JwtAdapter();
 const login = new Login(accountRepository, tokenProvider);
 const createAccount = new CreateAccount(accountRepository);
 
-app.post('/account/create', async (req, res) => {
+app.createRoute('post', '/account/create', async (req:any, res:any) => {
 	try {
 		const output = await createAccount.execute(req.body);
 		res.status(204).json(output);
@@ -32,7 +31,7 @@ app.post('/account/create', async (req, res) => {
 	}
 });
 
-app.post('/account/login', async (req, res) => {
+app.createRoute('post', '/account/login', async (req:any, res:any) => {
 	const output = await login.execute(req.body);
 	res.status(200).json(output);
 });

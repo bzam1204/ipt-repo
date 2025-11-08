@@ -22,21 +22,21 @@ export default function LoginPage() {
     <Theme theme="g10">
       <div style={{ display: 'grid', placeItems: 'center', minHeight: '100dvh', padding: '2rem' }}>
         <Tile style={{ width: 420 }}>
-          <h2 style={{ marginBottom: 16 }}>Sign in</h2>
+          <h2 style={{ marginBottom: 16 }}>Entrar</h2>
           {isError && (
             <InlineNotification
               kind="error"
-              title="Login failed"
-              subtitle="Invalid credentials. Please check and try again."
+              title="Falha no login"
+              subtitle="Credenciais inválidas. Verifique os dados e tente novamente."
               lowContrast
               style={{ marginBottom: 12 }}
             />
           )}
           <Form onSubmit={handleSubmit}>
-            <FormGroup legendText="Your credentials">
+            <FormGroup legendText="Suas credenciais">
               <TextInput
                 id="email"
-                labelText="Email"
+                labelText="E-mail"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.currentTarget.value)}
@@ -44,7 +44,7 @@ export default function LoginPage() {
               />
               <PasswordInput
                 id="password"
-                labelText="Password"
+                labelText="Senha"
                 value={password}
                 onChange={(e) => setPassword(e.currentTarget.value)}
                 required
@@ -52,9 +52,9 @@ export default function LoginPage() {
             </FormGroup>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 12 }}>
               <Button kind="primary" type="submit" disabled={isPending}>
-                {isPending ? <InlineLoading description="Signing in..." /> : 'Sign in'}
+                {isPending ? <InlineLoading description="Entrando..." /> : 'Entrar'}
               </Button>
-              <Link to="/register">Create an account</Link>
+              <Link to="/register">Criar uma conta</Link>
             </div>
           </Form>
         </Tile>
@@ -62,4 +62,3 @@ export default function LoginPage() {
     </Theme>
   );
 }
-
