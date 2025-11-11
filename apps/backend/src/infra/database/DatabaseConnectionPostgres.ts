@@ -1,4 +1,5 @@
 import 'dotenv/config';
+
 import pgp, {IDatabase} from "pg-promise";
 
 export class DatabaseConnectionAdapter {
@@ -23,6 +24,6 @@ export class DatabaseConnectionAdapter {
 
 	close(): void {
 		void this.connection.$pool.end();
-	}
+	};
 
 }

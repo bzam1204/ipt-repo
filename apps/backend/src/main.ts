@@ -1,7 +1,6 @@
 import 'dotenv/config';
 
-import cors from 'cors';
-import express from 'express';
+import DomainException from "@/domain/exceptions/DomainException";
 
 import {Login} from "@/application/use-cases/Login/Login";
 import {CreateAccount} from "@/application/use-cases/CreateAccount/CreateAccount";
@@ -9,7 +8,7 @@ import {CreateAccount} from "@/application/use-cases/CreateAccount/CreateAccount
 import {JwtAdapter} from "@/infra/JwtAdapter";
 import {AccountRepository} from "@/infra/repositories/AccountRepository";
 import {DatabaseConnectionAdapter} from "@/infra/database/DatabaseConnectionPostgres";
-import DomainException from "@/domain/exceptions/DomainException";
+
 import {ExpressAdapter} from "@/ExpressAdapter";
 
 const app = new ExpressAdapter();
