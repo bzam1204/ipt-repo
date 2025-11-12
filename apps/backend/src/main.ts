@@ -35,6 +35,11 @@ app.createRoute('post', '/account/login', async (req:any, res:any) => {
 	res.status(200).json(output);
 });
 
+app.createRoute('post', '/membership/admit-member', async (req:any, res:any) => {
+	const output = await admitMember.execute(req.body);
+	res.status(204).json(output);
+});
+
 app.listen(port, () => {
 	console.log(`🚀 Servidor Express rodando na porta:${port}`);
 });
