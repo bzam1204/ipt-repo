@@ -1,6 +1,6 @@
 import DomainException from "@/domain/exceptions/DomainException";
 
-import Address, {AddressBuilder} from './address';
+import {Address, AddressBuilder} from './address';
 
 describe('Address Value Object', () => {
 	const builder: AddressBuilder = {
