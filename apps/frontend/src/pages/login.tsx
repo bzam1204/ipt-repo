@@ -1,4 +1,4 @@
-import {Button, Form, FormGroup, InlineLoading, PasswordInput, TextInput, Tile, Theme, InlineNotification} from '@carbon/react';
+import {Button, Form, FormGroup, InlineLoading, PasswordInput, TextInput, Tile, InlineNotification} from '@carbon/react';
 import {useState} from 'react';
 import {useLogin} from '@/hooks/use-login';
 import {useAuth} from '@/providers/auth-provider';
@@ -19,49 +19,47 @@ export default function LoginPage() {
 	}
 
 	return (
-		<Theme theme="g10">
-			<section style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', width: '100vw'}}>
-				<img src='src/assets/background-image.png' style={{flexGrow: 1, objectFit: 'cover', width: '100%', height: '100%'}} />
-				<div style={{display: 'grid', placeItems: 'center', minHeight: '100dvh', padding: '2rem'}}>
-					<Tile style={{width: 420}}>
-						<h2 style={{marginBottom: 16}}>Entrar</h2>
-						{isError && (
-							<InlineNotification
-								kind="error"
-								title="Falha no login"
-								subtitle="Credenciais inválidas. Verifique os dados e tente novamente."
-								lowContrast
-								style={{marginBottom: 12}}
+		<section style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', width: '100vw'}}>
+			<img src='src/assets/background-image.png' style={{flexGrow: 1, objectFit: 'cover', width: '100%', height: '100%'}} />
+			<div style={{display: 'grid', placeItems: 'center', minHeight: '100dvh', padding: '2rem'}}>
+				<Tile style={{width: 420}}>
+					<h2 style={{marginBottom: 16}}>Entrar</h2>
+					{isError && (
+						<InlineNotification
+							kind="error"
+							title="Falha no login"
+							subtitle="Credenciais inválidas. Verifique os dados e tente novamente."
+							lowContrast
+							style={{marginBottom: 12}}
+						/>
+					)}
+					<Form onSubmit={handleSubmit}>
+						<FormGroup legendText="Suas credenciais">
+							<TextInput
+								id="email"
+								labelText="E-mail"
+								type="email"
+								value={email}
+								onChange={(e) => setEmail(e.currentTarget.value)}
+								required
 							/>
-						)}
-						<Form onSubmit={handleSubmit}>
-							<FormGroup legendText="Suas credenciais">
-								<TextInput
-									id="email"
-									labelText="E-mail"
-									type="email"
-									value={email}
-									onChange={(e) => setEmail(e.currentTarget.value)}
-									required
-								/>
-								<PasswordInput
-									id="password"
-									labelText="Senha"
-									value={password}
-									onChange={(e) => setPassword(e.currentTarget.value)}
-									required
-								/>
-							</FormGroup>
-							<div style={{display: 'flex', alignItems: 'center', gap: 12, marginTop: 12}}>
-								<Button kind="primary" type="submit" disabled={isPending}>
-									{isPending ? <InlineLoading description="Entrando..."/> : 'Entrar'}
-								</Button>
-								<Link to="/register">Criar uma conta</Link>
-							</div>
-						</Form>
-					</Tile>
-				</div>
-			</section>
-		</Theme>
+							<PasswordInput
+								id="password"
+								labelText="Senha"
+								value={password}
+								onChange={(e) => setPassword(e.currentTarget.value)}
+								required
+							/>
+						</FormGroup>
+						<div style={{display: 'flex', alignItems: 'center', gap: 12, marginTop: 12}}>
+							<Button kind="primary" type="submit" disabled={isPending}>
+								{isPending ? <InlineLoading description="Entrando..."/> : 'Entrar'}
+							</Button>
+							<Link to="/register">Criar uma conta</Link>
+						</div>
+					</Form>
+				</Tile>
+			</div>
+		</section>
 	);
 }
