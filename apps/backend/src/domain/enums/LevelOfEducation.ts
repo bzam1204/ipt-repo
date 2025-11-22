@@ -1,7 +1,7 @@
 export enum LevelOfEducation {
-	Secondary,
-	Elementary,
-	Illiterate,
-	HighEducation,
-	SpecialEducation,
+	Secondary = "Secondary",
+	Elementary = "Elementary",
+	Illiterate = "Illiterate",
+	HighEducation = "HighEducation",
+	SpecialEducation = "SpecialEducation",
 }

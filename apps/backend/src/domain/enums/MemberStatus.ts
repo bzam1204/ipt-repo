@@ -1,8 +1,8 @@
 export enum MemberStatus {
-	Excluded,
-	Restored,
-	Transferred,
-	UnderDiscipline,
-	InFullCommunion,
-	AbsentOrWhereaboutsUnknown,
+	Excluded = "Excluded",
+	Restored = "Restored",
+	Transferred = "Transferred",
+	UnderDiscipline = "UnderDiscipline",
+	InFullCommunion = "InFullCommunion",
+	AbsentOrWhereaboutsUnknown = "AbsentOrWhereaboutsUnknown",
 }

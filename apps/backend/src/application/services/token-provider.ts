@@ -1,3 +1,5 @@
+import {Login} from "@/application/use-cases/Login/Login";
+
 export interface TokenProvider {
 	decode(token: string): TokenPayload;
 
@@ -11,3 +13,5 @@ export type TokenPayload = {
 	accountId: string;
 	email: string;
 }
+
+export const TokenProviderToken = Symbol('TokenProvider');

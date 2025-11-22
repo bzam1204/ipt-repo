@@ -1,4 +1,4 @@
 export enum MemberClassification {
-	Communicant,
-	NonCommunicant,
+	Communicant = 'Communicant',
+	NonCommunicant = 'NonCommunicant',
 }

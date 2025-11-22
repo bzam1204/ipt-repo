@@ -1,8 +1,8 @@
 export enum MemberAdmissionType {
-	Restoration,
-	TransferLetter,
-	ProfessionOfFaith,
-	JurisdictionExOficio,
-	JurisdictionByRequest,
-	BaptismAndProfessionOfFaith,
+	Restoration = "Restoration",
+	TransferLetter = "TransferLetter",
+	ProfessionOfFaith = "ProfessionOfFaith",
+	JurisdictionExOficio = "JurisdictionExOficio",
+	JurisdictionByRequest = "JurisdictionByRequest",
+	BaptismAndProfessionOfFaith = "BaptismAndProfessionOfFaith",
 }

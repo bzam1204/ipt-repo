@@ -1,19 +1,22 @@
-import {TokenProvider} from "@/application/services/token-provider";
+import {inject, injectable} from "tsyringe";
 
-import {AccountRepository} from "@/infra/repositories/AccountRepository";
+import {TokenProvider, TokenProviderToken} from "@/application/services/token-provider";
 
+import {AccountRepository, AccountRepositoryToken} from "@/infra/repositories/AccountRepository";
+
+@injectable()
 export class Login {
 
 	constructor(
-		private readonly accountRepo: AccountRepository,
-		private readonly tokenProvider: TokenProvider,
+		@inject(AccountRepositoryToken)private readonly accountRepo: AccountRepository,
+		@inject(TokenProviderToken) private readonly tokenProvider: TokenProvider,
 	) {};
 
 	async execute(input: Input): Promise<Output> {
 		const account = await this.accountRepo.getByEmail(input.email);
-		if (!account) throw new Error("Invalid credentials");
+		if (!account) throw new Error("Credenciais Inválidas");
 		const isValidPassword = account.comparePassword(input.password);
-		if (!isValidPassword) throw new Error("Invalid credentials");
+		if (!isValidPassword) throw new Error("Credenciais Inválidas");
 		const payload = {accountId: account.accountId, email: account.email};
 		const accessToken = this.tokenProvider.signAccessToken(payload);
 		const refreshToken = this.tokenProvider.signRefreshToken(payload);
@@ -32,3 +35,5 @@ interface Output {
 	accessToken: string;
 	refreshToken: string;
 }
+
+export const LoginToken = Symbol(Login.name);

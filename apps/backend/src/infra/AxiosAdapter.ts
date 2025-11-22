@@ -12,6 +12,7 @@ class AxiosAdapter {
 				baseURL: this._baseUrl,
 				headers: {'Content-Type': 'application/json'},
 				validateStatus: () => true,
+				timeout: 5000,
 			}
 		);
 	};

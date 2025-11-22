@@ -1,11 +1,14 @@
-import {Account} from "@/domain/entities/Account/Account";
+import {inject, injectable} from "tsyringe";
 
-import {AccountRepository} from "@/infra/repositories/AccountRepository";
+import {Account} from "@/domain/entities/Account/Account";
 import DomainException from "@/domain/exceptions/DomainException";
 
+import {AccountRepository, AccountRepositoryToken} from "@/infra/repositories/AccountRepository";
+
+@injectable()
 export class CreateAccount {
 
-	constructor(private readonly accountRepo: AccountRepository) {}
+	constructor(@inject(AccountRepositoryToken)private readonly accountRepo: AccountRepository) {}
 
 	async execute(input: Input): Promise<void> {
 		const emailExists = await this.accountRepo.getByEmail(input.email);
@@ -24,3 +27,5 @@ interface Input {
 	lastName: string;
 	firstName: string;
 }
+
+export const CreateAccountToken = Symbol(CreateAccount.name);

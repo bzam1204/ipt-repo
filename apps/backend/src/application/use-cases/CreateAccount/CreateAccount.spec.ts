@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import {stub} from 'sinon';
 
 import {Account} from "@/domain/entities/Account/Account";

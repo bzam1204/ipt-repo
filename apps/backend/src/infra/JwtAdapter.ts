@@ -1,7 +1,9 @@
 import jwtLib from 'jsonwebtoken';
 
 import {TokenPayload, TokenProvider} from "@/application/services/token-provider";
+import {injectable} from "tsyringe";
 
+@injectable()
 export class JwtAdapter implements TokenProvider {
 	private readonly _jwt = jwtLib;
 	private readonly accessSecret = process.env.JWT_ACCESS_SECRET ?? "access-secret";

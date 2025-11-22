@@ -1,11 +1,13 @@
 import {Account} from "@/domain/entities/Account/Account";
 
 import {AccountModel} from "@/infra/database/models/account.model";
-import {DatabaseConnectionAdapter} from "@/infra/database/DatabaseConnectionPostgres";
+import {DatabaseConnectionAdapter, DatabaseConnectionAdapterToken} from "@/infra/database/DatabaseConnectionAdapter";
+import {inject, injectable} from "tsyringe";
 
+@injectable()
 export class AccountRepository {
 
-	constructor(private readonly db: DatabaseConnectionAdapter) { }
+	constructor(@inject(DatabaseConnectionAdapterToken) private readonly db: DatabaseConnectionAdapter) { }
 
 	async getByEmail(email: string): Promise<Account | null> {
 		const query = "SELECT account_id, cpf, email, password, last_name, first_name FROM ipt.accounts WHERE email = $1";
@@ -37,3 +39,4 @@ export class AccountRepository {
 }
 
 export type DatabaseQueryResult<T> = Array<T>;
+export const AccountRepositoryToken = Symbol('AccountRepository');
