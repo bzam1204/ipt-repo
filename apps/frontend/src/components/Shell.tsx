@@ -1,4 +1,4 @@
-import {ReactNode} from 'react';
+import {type ReactNode} from 'react';
 import {
 	Content,
 	Header,
@@ -14,7 +14,7 @@ import {
 	SideNavLink,
 	SkipToContent,
 } from '@carbon/react';
-import {Notification, Switcher} from '@carbon/icons-react';
+import {Dashboard, UserMultiple, Notification, Switcher} from '@carbon/icons-react';
 
 type ShellProps = {
 	children: ReactNode;
@@ -26,7 +26,7 @@ export function Shell({children}: ShellProps) {
 			render={({isSideNavExpanded, onClickSideNavExpand}) => (
 				<>
 					<Header aria-label="IPT">
-						<SkipToContent />
+						<SkipToContent/>
 						<HeaderMenuButton
 							aria-label={isSideNavExpanded ? 'Fechar menu' : 'Abrir menu'}
 							isCollapsible
@@ -41,10 +41,10 @@ export function Shell({children}: ShellProps) {
 						</HeaderNavigation>
 						<HeaderGlobalBar>
 							<HeaderGlobalAction aria-label="Notifications">
-								<Notification size={20} />
+								<Notification size={20}/>
 							</HeaderGlobalAction>
 							<HeaderGlobalAction aria-label="Switcher">
-								<Switcher size={20} />
+								<Switcher size={20}/>
 							</HeaderGlobalAction>
 						</HeaderGlobalBar>
 						<SideNav
@@ -54,10 +54,10 @@ export function Shell({children}: ShellProps) {
 							onOverlayClick={onClickSideNavExpand}
 						>
 							<SideNavItems>
-								<SideNavLink href="/dashboard" isActive>
+								<SideNavLink href="/dashboard" isActive renderIcon={Dashboard}>
 									Dashboard
 								</SideNavLink>
-								<SideNavLink href="/members" isActive>
+								<SideNavLink href="/members" isActive renderIcon={UserMultiple}>
 									Membros
 								</SideNavLink>
 							</SideNavItems>
