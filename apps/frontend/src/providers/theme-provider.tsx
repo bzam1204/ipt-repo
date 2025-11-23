@@ -14,14 +14,10 @@ const THEME_STORAGE_KEY = 'app.theme';
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 export function ThemeProvider({children}: {children: ReactNode}) {
-	const [theme, setThemeState] = useState<ThemeName>('g10');
-
-	useEffect(() => {
+	const [theme, setThemeState] = useState<ThemeName>(() => {
 		const stored = localStorage.getItem(THEME_STORAGE_KEY) as ThemeName | null;
-		if (stored === 'g10' || stored === 'g100') {
-			setThemeState(stored);
-		}
-	}, []);
+		return stored === 'g10' || stored === 'g100' ? stored : 'g10';
+	});
 
 	useEffect(() => {
 		document.documentElement.dataset.carbonTheme = theme;

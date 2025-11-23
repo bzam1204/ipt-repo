@@ -1,6 +1,5 @@
 import {type ReactNode} from 'react';
-
-import {useLocation} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import {Dashboard, UserMultiple, Notification, Switcher, Sun, Moon} from '@carbon/icons-react';
 import {Content, Header, HeaderContainer, HeaderGlobalAction, HeaderGlobalBar, HeaderMenuButton, HeaderMenuItem, HeaderName, HeaderNavigation, SideNav, SideNavItems, SideNavLink, SkipToContent} from '@carbon/react';
 
@@ -8,7 +7,14 @@ import {useTheme} from '@/providers/theme-provider';
 
 export function Shell({children}: ShellProps) {
 	const {pathname} = useLocation();
+	const navigate = useNavigate();
 	const {theme, toggleTheme} = useTheme();
+
+	const goTo = (path: string) => (event?: React.MouseEvent) => {
+		event?.preventDefault();
+		navigate(path);
+	};
+
 	return (
 		<HeaderContainer
 			render={({isSideNavExpanded, onClickSideNavExpand}) => (
@@ -16,9 +22,9 @@ export function Shell({children}: ShellProps) {
 					<Header aria-label="IPT">
 						<SkipToContent/>
 						<HeaderMenuButton aria-label={isSideNavExpanded ? 'Fechar menu' : 'Abrir menu'} isCollapsible onClick={onClickSideNavExpand} isActive={isSideNavExpanded} />
-						<HeaderName href="/dashboard" prefix="IPT">Painel</HeaderName>
+						<HeaderName href="/dashboard" prefix="IPT" onClick={goTo('/dashboard')}>Painel</HeaderName>
 						<HeaderNavigation aria-label="IPT">
-							<HeaderMenuItem href="/dashboard">Dashboard</HeaderMenuItem>
+							<HeaderMenuItem href="/dashboard" onClick={goTo('/dashboard')}>Dashboard</HeaderMenuItem>
 						</HeaderNavigation>
 						<HeaderGlobalBar>
 							<HeaderGlobalAction aria-label="Notifications">
@@ -31,8 +37,8 @@ export function Shell({children}: ShellProps) {
 						</HeaderGlobalBar>
 						<SideNav isRail expanded={isSideNavExpanded} aria-label="Side navigation" isPersistent={false} onOverlayClick={onClickSideNavExpand}>
  							<SideNavItems>
-								<SideNavLink href="/dashboard" isActive={pathname.startsWith('/dashboard')} renderIcon={Dashboard}>Dashboard</SideNavLink>
-								<SideNavLink href="/members" isActive={pathname.startsWith('/members')} renderIcon={UserMultiple}>Membros</SideNavLink>
+								<SideNavLink href="/dashboard" onClick={goTo('/dashboard')} isActive={pathname.startsWith('/dashboard')} renderIcon={Dashboard}>Dashboard</SideNavLink>
+								<SideNavLink href="/members" onClick={goTo('/members')} isActive={pathname.startsWith('/members')} renderIcon={UserMultiple}>Membros</SideNavLink>
 							</SideNavItems>
 						</SideNav>
 					</Header>
