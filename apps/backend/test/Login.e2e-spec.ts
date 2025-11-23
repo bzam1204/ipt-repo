@@ -16,8 +16,9 @@ describe('Login', () => {
 		const payload = {email: accountBuilder.email, password: accountBuilder.password};
 		const response = await axios.post(loginEndpoint, payload);
 		expect(response.status).toBe(200);
-		expect(response.data.accessToken).toBeDefined();
-		expect(response.data.refreshToken).toBeDefined();
+		expect(response.data.success).toBe(true);
+		expect(response.data.data.accessToken).toBeDefined();
+		expect(response.data.data.refreshToken).toBeDefined();
 	});
 
 });

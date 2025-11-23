@@ -48,8 +48,9 @@ describe('Fetch Members', () => {
 
 		const response = await axios.get('membership/fetch-members');
 		expect(response.status).toBe(200);
-		expect(response.data.members.length).toBeGreaterThanOrEqual(2);
-		const emails = response.data.members.map((m: any) => m.email);
+		expect(response.data.success).toBe(true);
+		expect(response.data.data.members.length).toBeGreaterThanOrEqual(2);
+		const emails = response.data.data.members.map((m: any) => m.email);
 		expect(emails).toEqual(expect.arrayContaining([first.email, second.email]));
 	});
 
