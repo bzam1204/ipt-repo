@@ -1,9 +1,11 @@
+import {useState, useMemo, useRef, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import {
 	Button,
 	DataTable,
 	DataTableSkeleton,
 	InlineNotification,
+	Pagination,
 	Table,
 	TableBody,
 	TableCell,
@@ -13,21 +15,23 @@ import {
 	TableRow,
 	Tag,
 	Tile,
+	TableToolbar,
+	TableToolbarContent,
+	Dropdown,
+	Search,
 } from '@carbon/react';
 import {Add, ArrowRight} from '@carbon/icons-react';
 import {Shell} from '@/components/Shell';
 import {useMembersList} from '@/hooks/use-members';
 import type {MemberRecord} from '@/gateways/members-gateway';
 import {MemberStatus} from '@/domain/enums/MemberStatus';
+import {useDebounce} from '@/hooks/use-debounce';
 
 const headers = [
 	{key: 'fullName', header: 'Nome'},
 	{key: 'email', header: 'E-mail'},
-	{key: 'phone', header: 'Telefone'},
 	{key: 'status', header: 'Status'},
-	{key: 'admissionType', header: 'Admissão'},
 	{key: 'classification', header: 'Classificação'},
-	{key: 'location', header: 'Cidade/UF'},
 	{key: 'actions', header: ''},
 ];
 
@@ -45,17 +49,37 @@ function formatRows(members: MemberRecord[]) {
 		id: m.memberId,
 		fullName: m.fullName,
 		email: m.email,
-		phone: m.phone,
 		status: m.status,
-		admissionType: m.admissionType,
 		classification: m.classification,
-		location: `${m.address.city} / ${m.address.state}`,
 	}));
 }
 
 export default function MembersPage() {
-	const {data, isLoading, isError} = useMembersList();
-	const rows = formatRows(data ?? []);
+	const [page, setPage] = useState(1);
+	const [pageSize, setPageSize] = useState(10);
+	const [searchInput, setSearchInput] = useState('');
+	const [statusFilter, setStatusFilter] = useState<MemberStatus | 'all'>('all');
+	const [sortBy, setSortBy] = useState<string>('fullName');
+	const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+	const [searchFocused, setSearchFocused] = useState(false);
+	const searchRef = useRef<HTMLInputElement>(null);
+
+	const debouncedSearch = useDebounce(searchInput, 500);
+	const sortParam = `${sortDirection === 'desc' ? '-' : ''}${sortBy}`;
+	const {data, isInitialLoading, isError, isFetching} = useMembersList({
+		page,
+		perPage: pageSize,
+		search: debouncedSearch || undefined,
+		status: statusFilter === 'all' ? undefined : statusFilter,
+		sort: sortParam,
+	});
+	const rows = useMemo(() => formatRows(data?.members ?? []), [data]);
+	const totalItems = data?.meta.total ?? 0;
+	const showSkeleton = isInitialLoading && !data;
+
+	useEffect(() => {
+		if (searchFocused) searchRef.current?.focus();
+	}, [searchFocused, isFetching, data, searchInput]);
 
 	return (
 		<Shell>
@@ -81,7 +105,61 @@ export default function MembersPage() {
 						/>
 					)}
 
-					{isLoading ? (
+					<TableToolbar>
+						<TableToolbarContent>
+							<Search
+								size="sm"
+								labelText="Buscar"
+								placeholder="Buscar por nome, email..."
+								value={searchInput}
+								ref={searchRef}
+								onFocus={() => setSearchFocused(true)}
+								onBlur={() => setSearchFocused(false)}
+								onChange={(e) => {
+									setSearchInput(e.currentTarget.value);
+									setPage(1);
+								}}
+							/>
+							<Dropdown
+								id="status-filter"
+								label="Status"
+								titleText=""
+								size="sm"
+								items={['all', ...Object.values(MemberStatus)]}
+								selectedItem={statusFilter}
+								onChange={({selectedItem}) => {
+									setStatusFilter(selectedItem as MemberStatus | 'all');
+									setPage(1);
+								}}
+								itemToString={(item) => (item === 'all' ? 'Todos os status' : item ?? '')}
+							/>
+							<Dropdown
+								id="sort-by"
+								label="Ordenar por"
+								titleText=""
+								size="sm"
+								items={headers.filter((h) => h.key !== 'actions').map((h) => h.key)}
+								selectedItem={sortBy}
+								onChange={({selectedItem}) => {
+									setSortBy(selectedItem as string);
+									setPage(1);
+								}}
+								itemToString={(item) => headers.find((h) => h.key === item)?.header ?? String(item)}
+							/>
+							<Dropdown
+								id="sort-direction"
+								label="Direção"
+								titleText=""
+								size="sm"
+								items={['asc', 'desc']}
+								selectedItem={sortDirection}
+								onChange={({selectedItem}) => setSortDirection(selectedItem as 'asc' | 'desc')}
+								itemToString={(item) => (item === 'asc' ? 'Asc' : 'Desc')}
+							/>
+						</TableToolbarContent>
+					</TableToolbar>
+
+					{showSkeleton ? (
 						<DataTableSkeleton
 							headers={headers}
 							showToolbar={false}
@@ -90,14 +168,14 @@ export default function MembersPage() {
 							columnCount={headers.length}
 						/>
 					) : (
-						<DataTable rows={rows} headers={headers} size="compact">
+						<DataTable rows={rows} headers={headers} size="sm">
 							{({rows, headers, getHeaderProps, getTableProps, getRowProps}) => (
 								<TableContainer>
 									<Table {...getTableProps()}>
 										<TableHead>
 											<TableRow>
 												{headers.map((header) => (
-													<TableHeader key={header.key} {...getHeaderProps({header})}>
+													<TableHeader {...getHeaderProps({header})}>
 														{header.header}
 													</TableHeader>
 												))}
@@ -105,7 +183,7 @@ export default function MembersPage() {
 										</TableHead>
 										<TableBody>
 											{rows.map((row) => (
-												<TableRow key={row.id} {...getRowProps({row})}>
+												<TableRow {...getRowProps({row})}>
 													{row.cells.map((cell) => {
 														if (cell.info.header === 'fullName') {
 															return (
@@ -147,6 +225,21 @@ export default function MembersPage() {
 							)}
 						</DataTable>
 					)}
+					{isFetching && !showSkeleton && (
+						<div style={{padding: '0.5rem 0', color: 'var(--cds-text-secondary)', fontSize: 12}}>
+							Atualizando...
+						</div>
+					)}
+					<Pagination
+						page={page}
+						pageSize={pageSize}
+						pageSizes={[10, 20, 50]}
+						totalItems={totalItems}
+						onChange={({page, pageSize}) => {
+							setPage(page);
+							setPageSize(pageSize);
+						}}
+					/>
 				</Tile>
 			</div>
 		</Shell>

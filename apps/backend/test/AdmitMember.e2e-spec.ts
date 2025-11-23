@@ -13,17 +13,19 @@ import {axios} from "../src/infra/AxiosAdapter";
 import {Container} from "../src/infra/container";
 import {cpfGenerator} from "../src/infra/cpf-generator";
 import {MemberRepository} from "../src/infra/repositories/MemberRepository";
+import {fullNameFactory} from "./utils/factories/fullNameFactory";
 
 describe('Admit Member', () => {
+	const fullName = fullNameFactory();
 	const input = {
 		sex: Sex.Male,
 		cpf: cpfGenerator(),
 		email: crypto.randomUUID() + "@gmail.com",
 		phone: '95 99999-9999',
 		status: MemberStatus.Transferred,
-		fullName: 'John Doe',
+		fullName: fullName(),
 		birthdate: '1987-10-22',
-		celebrant: 'Ciclano da Silva',
+		celebrant: fullName(),
 		placeOfBirth: 'Juiz de Fora - MG',
 		maritalStatus: MaritalStatus.Single,
 		admissionType: MemberAdmissionType.Restoration,

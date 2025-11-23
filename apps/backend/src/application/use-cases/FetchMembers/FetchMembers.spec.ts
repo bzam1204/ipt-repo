@@ -37,13 +37,16 @@ describe('Fetch Members', () => {
 		complement: null,
 		created_at: new Date(),
 	}];
-	const query = jest.fn().mockResolvedValue(rows);
+	const query = jest.fn()
+		.mockResolvedValueOnce(rows)
+		.mockResolvedValueOnce([{total: rows.length}]);
 	const dbStub = {query};
 
 	it('should return mapped members', async () => {
 		const fetchMembers = new FetchMembers(dbStub as any);
-		const output = await fetchMembers.execute({limit: 10});
-		expect(query).toHaveBeenCalledWith(expect.any(String), [10, 0]);
+		const output = await fetchMembers.execute({perPage: 10, page: 1});
+		expect(query).toHaveBeenNthCalledWith(1, expect.any(String), []);
+		expect(query).toHaveBeenNthCalledWith(2, expect.any(String), []);
 		expect(output.members).toHaveLength(1);
 		const [member] = output.members;
 		expect(member.memberId).toBe(rows[0].member_id);
@@ -51,11 +54,15 @@ describe('Fetch Members', () => {
 		expect(member.status).toBe(rows[0].status);
 		expect(member.address.city).toBe(rows[0].city);
 		expect(member.birthdate).toBe(new Date(rows[0].birthdate).toISOString());
+		expect(output.meta).toMatchObject({total: 1, page: 1, perPage: 10, totalPages: 1});
 	});
 
 	it('should use default pagination when none is provided', async () => {
-		const fetchMembers = new FetchMembers(dbStub as any);
+		const queryDefault = jest.fn()
+			.mockResolvedValueOnce(rows)
+			.mockResolvedValueOnce([{total: rows.length}]);
+		const fetchMembers = new FetchMembers({query: queryDefault} as any);
 		await fetchMembers.execute();
-		expect(query).toHaveBeenLastCalledWith(expect.any(String), [50, 0]);
+		expect(queryDefault).toHaveBeenCalledWith(expect.any(String), []);
 	});
 });

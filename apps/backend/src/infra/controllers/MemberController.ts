@@ -18,13 +18,13 @@ export class MemberController {
 
 	@Post('/admit-member')
 	@HttpStatus(HttpStatusCode.NO_CONTENT)
-	async createAccount(@Body() input: any) {
+	async admitMember(@Body() input: any) {
 		return await this._admitMember.execute(input);
 	};
 
 	@Get('/fetch-members')
 	@HttpStatus(HttpStatusCode.OK)
-	async searchMembers(@Query() input: any) {
+	async fetchMembers(@Query() input: any) {
 		return await this._fetchMembers.execute(input);
 	};
 

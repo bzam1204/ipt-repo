@@ -20,8 +20,8 @@ export default function MemberPage() {
 	const membersQuery = useMembersList();
 
 	const member = useMemo(
-		() => membersQuery.data?.find((m) => m.memberId === memberId),
-		[memberId, membersQuery.data],
+		() => membersQuery.data?.members.find((m) => m.memberId === memberId),
+		[memberId, membersQuery.data?.members],
 	);
 
 	return (

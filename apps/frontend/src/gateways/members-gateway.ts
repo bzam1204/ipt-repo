@@ -27,11 +27,21 @@ export type MemberRecord = {
 };
 
 type FetchMembersResponse =
-	| {success: true; data: {members: MemberRecord[]}}
-	| {members: MemberRecord[]};
+	| {success: true; data: {members: MemberRecord[]; meta: {total: number; page: number; perPage: number; totalPages: number}}}
+	| {members: MemberRecord[]; meta?: {total: number; page?: number; perPage?: number; totalPages?: number}};
+
+export type FetchMembersParams = {
+	page?: number;
+	perPage?: number;
+	search?: string;
+	status?: MemberStatus | MemberStatus[];
+	sort?: string; // e.g. "fullName" or "-createdAt"
+	createdAtGte?: string;
+	createdAtLte?: string;
+};
 
 export interface MembersGateway {
-	fetchMembers(params?: {limit?: number; offset?: number}): Promise<MemberRecord[]>;
+	fetchMembers(params?: FetchMembersParams): Promise<{members: MemberRecord[]; meta: {total: number; page: number; perPage: number; totalPages: number}}>;
 }
 
 export class HttpMembersGateway implements MembersGateway {
@@ -42,15 +52,31 @@ export class HttpMembersGateway implements MembersGateway {
 		this.http = http;
 	}
 
-	async fetchMembers(params?: {limit?: number; offset?: number}): Promise<MemberRecord[]> {
+	async fetchMembers(params?: FetchMembersParams): Promise<{members: MemberRecord[]; meta: {total: number; page: number; perPage: number; totalPages: number}}> {
 		const searchParams = new URLSearchParams();
-		if (params?.limit) searchParams.set('limit', String(params.limit));
-		if (params?.offset) searchParams.set('offset', String(params.offset));
+		if (params?.page) searchParams.set('page', String(params.page));
+		if (params?.perPage) searchParams.set('perPage', String(params.perPage));
+		if (params?.search) searchParams.set('search', params.search);
+		if (params?.status) {
+			const statusValue = Array.isArray(params.status) ? params.status.join(',') : params.status;
+			searchParams.set('status', statusValue);
+		}
+		if (params?.sort) searchParams.set('sort', params.sort);
+		if (params?.createdAtGte) searchParams.set('createdAt[gte]', params.createdAtGte);
+		if (params?.createdAtLte) searchParams.set('createdAt[lte]', params.createdAtLte);
 		const qs = searchParams.toString();
 		const url = `${this.baseUrl}/membership/fetch-members${qs ? `?${qs}` : ''}`;
 		const res = await this.http.get<FetchMembersResponse>({url});
-		if (!res) return [];
-		if ('success' in res) return res.data.members;
-		return res.members;
+		if (!res) return {members: [], meta: {total: 0, page: 1, perPage: params?.perPage ?? 0, totalPages: 0}};
+		if ('success' in res) return {members: res.data.members, meta: res.data.meta};
+		return {
+			members: res.members,
+			meta: {
+				total: res.meta?.total ?? res.members.length,
+				page: res.meta?.page ?? params?.page ?? 1,
+				perPage: res.meta?.perPage ?? params?.perPage ?? res.members.length,
+				totalPages: res.meta?.totalPages ?? 1,
+			},
+		};
 	}
 }
