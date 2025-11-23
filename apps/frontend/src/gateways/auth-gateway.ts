@@ -34,8 +34,9 @@ export class HttpAuthGateway implements AuthGateway {
 
 	async login(input: LoginInput): Promise<LoginOutput> {
 		const url = this.baseUrl + "/account/login";
-		const output = await this.http.post<LoginInput, LoginOutput>({url, body: input});
-		return output;
+		const res = await this.http.post<LoginInput, LoginOutput | {success: true; data: LoginOutput}>({url, body: input});
+		if (res && typeof res === 'object' && 'success' in res) return (res as {success: true; data: LoginOutput}).data;
+		return res as LoginOutput;
 	};
 
 }
