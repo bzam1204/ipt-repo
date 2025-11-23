@@ -18,7 +18,7 @@ export class FullName {
 	};
 
 	hasInvalidCharacter(name: string): boolean {
-		const regex = /[^a-zA-Z\s]/;
+		const regex = /[^a-zA-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ\s]/;
 		const output = regex.test(name);
 		return output;
 	};

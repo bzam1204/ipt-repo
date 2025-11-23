@@ -10,6 +10,7 @@ import DomainException from "@/domain/exceptions/DomainException";
 import {HttpStatusCode} from "@/infra/decorators/http-status.decorator";
 import {HttpException} from "@/infra/http/http-exception";
 import {buildErrorResponse, buildSuccessResponse} from "@/infra/http/http-response";
+import {logger} from "@/infra/logger";
 
 export class ExpressAdapter {
 	app: Express;
@@ -40,6 +41,7 @@ export class ExpressAdapter {
 	};
 
 	private routeAdapter = (expressHandler: any, controller: any, routeDefinition: RouteDefinition) => async (req: Request, res: Response, next: NextFunction) => {
+		const startedAt = Date.now();
 		const httpRequest = {body: req.body, params: req.params, query: req.query};
 		const paramsList = Reflect.getMetadata(MetadataKeys.params, controller, routeDefinition.propertyKey) ?? [];
 		const args = this.getRouteParameters(paramsList, httpRequest);
@@ -49,7 +51,9 @@ export class ExpressAdapter {
 			const result = await expressHandler(...args);
 			const response = buildSuccessResponse(result, statusCode);
 			if (response.statusCode === HttpStatusCode.NO_CONTENT) return res.status(response.statusCode).end();
-			return res.status(response.statusCode).json(response.body);
+			res.status(response.statusCode).json(response.body);
+			logger.info(`${req.method} ${req.path} ${response.statusCode} - ${Date.now() - startedAt}ms`);
+			return;
 		} catch (error) {
 			return next(error);
 		}
@@ -71,14 +75,15 @@ export class ExpressAdapter {
 		this.app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
 			const normalizedError = this.normalizeError(err);
 			const response = buildErrorResponse(normalizedError, req.path);
+			logger.error(`${req.method} ${req.path} ${response.statusCode} - ${normalizedError.message}${normalizedError.stack ? `\n${normalizedError.stack}` : ''}`);
 			return res.status(response.statusCode).json(response.body);
 		});
 	}
 
 	private normalizeError(err: any): HttpException {
 		if (err instanceof HttpException) return err;
-		if (err instanceof DomainException) return new HttpException(HttpStatusCode.UNPROCESSABLE_ENTITY, err.message, err.cause);
-		if (err instanceof Error) return new HttpException(HttpStatusCode.INTERNAL_SERVER_ERROR, err.message);
+		if (err instanceof DomainException) return new HttpException(HttpStatusCode.UNPROCESSABLE_ENTITY, err.message, err.cause, err.stack);
+		if (err instanceof Error) return new HttpException(HttpStatusCode.INTERNAL_SERVER_ERROR, err.message, undefined, err.stack);
 		return new HttpException(HttpStatusCode.INTERNAL_SERVER_ERROR, 'Internal server error');
 	}
 
