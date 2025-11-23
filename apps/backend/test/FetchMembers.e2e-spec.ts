@@ -7,7 +7,6 @@ import {LevelOfEducation} from "../src/domain/enums/LevelOfEducation";
 import {MemberAdmissionType} from "../src/domain/enums/MemberAdmitionType";
 import {MemberClassification} from "../src/domain/enums/MemberClassification";
 
-
 import {axios} from "../src/infra/AxiosAdapter";
 import {cpfGenerator} from "../src/infra/cpf-generator";
 import {fullNameFactory} from "./utils/factories/fullNameFactory";

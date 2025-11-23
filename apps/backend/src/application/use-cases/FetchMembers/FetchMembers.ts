@@ -7,8 +7,8 @@ import {MemberAdmissionType} from "@/domain/enums/MemberAdmitionType";
 import {MemberClassification} from "@/domain/enums/MemberClassification";
 
 import {MemberModel} from "@/infra/database/models/member.model";
-import {DatabaseConnectionAdapter, DatabaseConnectionAdapterToken} from "@/infra/database/DatabaseConnectionAdapter";
 import {buildMeta, normalizePagination, PaginationMeta} from "@/infra/http/pagination";
+import {DatabaseConnectionAdapter, DatabaseConnectionAdapterToken} from "@/infra/database/DatabaseConnectionAdapter";
 
 export interface FetchMembersQuery {
 	search?: string;
